@@ -26,13 +26,10 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	}
 
 
-	public void addbetween(E e, DNode<E> p, DNode<E> n) {
-		DNode<E>  newNode = new DNode<E>(e, p, n);
-		p.setNext(newNode);
-		n.setPrev(newNode);
-	}
+
+	
 	@Override
-	public boolean add(E obj) {
+	public boolean add(E obj) {//done
 		// TODO Auto-generated method stub
 		DNode<E> curr = head.getNext();
 		//node is the first
@@ -100,7 +97,28 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	@Override
 	public boolean remove(int index) {
 		// TODO Auto-generated method stub
-		return false;
+		if(index<0 || index>currentSize) {throw new IndexOutOfBoundsException();}
+
+		int i=0;
+		DNode<E> curr=new DNode<E>();
+		curr =head.getNext();
+		Iterator iter = iterator();
+		while(iter.hasNext()) {
+
+			if(i==index) {
+				break;
+			}
+			curr = curr.getNext();
+			i++;
+			iter.next();
+		}
+		DNode<E> before = curr.getPrev();
+		DNode<E> after = curr.getNext();
+		before.setNext(after);
+		after.setPrev(before);
+		currentSize--;
+		return true;
+
 	}
 
 	@Override
@@ -190,7 +208,23 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	@Override
 	public int firstIndex(E e) {
 		// TODO Auto-generated method stub
-		return 0;
+		if(!this.contains(e)) {
+			return -1;
+		}
+		
+		int i=0;
+		
+		Iterator iter = iterator();
+		E curr= (E) iter.next();
+		while(iter.hasNext()) {
+
+			if(curr.equals(e)) {
+				break;
+			}
+			i++;
+			curr = (E) iter.next();
+		}
+		return i;
 	}
 
 	@Override
