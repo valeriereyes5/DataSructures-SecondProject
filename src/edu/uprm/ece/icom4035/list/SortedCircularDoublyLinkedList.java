@@ -13,7 +13,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	int size;
 
 	public SortedCircularDoublyLinkedList() {//complete
-		head= new DNode();
+		head= new DNode<E>(null);
 		this.head.setElement(null);
 		this.head.setNext(head);head.setPrev(head);
 		currentSize=-1;
@@ -27,9 +27,9 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 
 
 
-	
+
 	@Override
-	public boolean add(E obj) {//done
+	public boolean add(E obj) {//tested
 		// TODO Auto-generated method stub
 		DNode<E> curr = head.getNext();
 		//node is the first
@@ -57,7 +57,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 				curr.getPrev().setNext(newNode);
 				curr.setPrev(newNode);
 			}
-			
+
 			else if(((Comparable<E>) obj).compareTo(head.getNext().getElement())>0) {
 				DNode<E>  newNode = new DNode<E>(obj, head.getPrev(),head);
 				head.getPrev().setNext(newNode);
@@ -73,16 +73,16 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 
 
 	@Override
-	public int size() {//done
+	public int size() {//tested
 		// TODO Auto-generated method stub
 		return size;
 	}
 
 	@Override
-	public boolean remove(E obj) { //complete
+	public boolean remove(E obj) { //tested
 		// TODO Auto-generated method stub
 		DNode<E> cursor = head.getNext();
-		for(int i=0; i<currentSize; i++) {
+		for(int i=0; i<size; i++) {
 			if(obj==cursor.getElement()) {
 				DNode<E> before = cursor.getPrev();
 				DNode<E> after = cursor.getNext();
@@ -91,7 +91,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 				currentSize--;
 				size--;
 				return true;
-				
+
 
 			}
 			cursor= cursor.next;
@@ -101,7 +101,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	}
 
 	@Override
-	public boolean remove(int index) {
+	public boolean remove(int index) { //tested
 		// TODO Auto-generated method stub
 		if(index<0 || index>currentSize) {throw new IndexOutOfBoundsException();}
 
@@ -128,26 +128,44 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 
 	}
 
+
+	//removes all copies of element obj, and returns the number of copies erased.
 	@Override
-	public int removeAll(E obj) {
+	public int removeAll(E obj) {//tested
 		// TODO Auto-generated method stub
-		return 0;
+		if(!this.contains(obj)) {
+			return 0;
+
+		}
+
+		int counter=0;
+
+		Iterator<E> iter = this.iterator();
+
+		while(iter.hasNext()) {
+			if(obj==iter.next()) {
+				this.remove(obj);
+				counter++;
+			}
+
+		}
+		return counter;
 	}
 
 	@Override
-	public E first() {//done
+	public E first() {//tested
 		// TODO Auto-generated method stub
 		return head.getNext().getElement();
 	}
 
 	@Override
-	public E last() { //done
+	public E last() { //tested
 		// TODO Auto-generated method stub
 		return head.getPrev().getElement();
 	}
 
 	@Override
-	public E get(int index) { //done //
+	public E get(int index) { //tested
 		if(index<0 || index>currentSize) {throw new IndexOutOfBoundsException();}
 
 		int i=0;
@@ -171,241 +189,263 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 	}
 
 	@Override
-	public void clear() {//complete
+	public void clear() {//tetsed
 		// TODO Auto-generated method stub
 		if(this.isEmpty()) {
 			return;
 		}
-		int index = 0;
-		while(index!=currentSize) {
-			this.remove(index);
-		}
-	}
+		Iterator<E> iter = this.iterator();
 
-	@Override
-	public boolean contains(E e) { //done
-		DNode<E> cursor = head.getNext();
-		for(int i=0; i<currentSize; i++) {
-			if(e==cursor.getElement()) {
-				return true;
-			}
-			cursor= cursor.next;
-		}
-
-		return false;
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isEmpty() {//done
-		// TODO Auto-generated method stub
-		return this.size==0;
-	}
-
-	@Override
-	public Iterator<E> iterator(int index) {//done
-		// TODO Auto-generated method stub
-		return new FowardListIteratorIndex(index);
-	}
-
-	@Override
-	public int firstIndex(E e) {
-		// TODO Auto-generated method stub
-		if(!this.contains(e)) {
-			return -1;
-		}
-		
-		int i=0;
-		
-		Iterator iter = iterator();
-		E curr= (E) iter.next();
 		while(iter.hasNext()) {
-
-			if(curr.equals(e)) {
-				break;
-			}
-			i++;
-			curr = (E) iter.next();
+			this.remove(iter.next());
 		}
-		return i;
+
+	}
+
+
+@Override
+public boolean contains(E e) { //tested
+	DNode<E> cursor = head.getNext();
+	for(int i=0; i<size; i++) {
+		if(e==cursor.getElement()) {
+			return true;
+		}
+		cursor= cursor.next;
+	}
+
+	return false;
+	// TODO Auto-generated method stub
+
+}
+
+@Override
+public boolean isEmpty() {//tested
+	// TODO Auto-generated method stub
+	return this.size==0;
+}
+
+@Override
+public Iterator<E> iterator(int index) {//done
+	// TODO Auto-generated method stub
+	return new FowardListIteratorIndex(index);
+}
+
+@Override
+public int firstIndex(E e) {//tested
+	// TODO Auto-generated method stub
+	if(!this.contains(e)) {
+		return -1;
+	}
+
+	int i=0;
+
+	Iterator iter = iterator();
+	E curr= (E) iter.next();
+	while(iter.hasNext()) {
+
+		if(curr.equals(e)) {
+			break;
+		}
+		i++;
+		curr = (E) iter.next();
+	}
+	return i;
+}
+
+@Override
+public int lastIndex(E e) {
+	// TODO Auto-generated method stub
+	if(!this.contains(e)) {
+		return -1;
+	}
+
+	int i=size;
+
+	ReverseIterator<E> iter = reverseIterator();
+	while(iter.hasPrevious()) {
+
+		if(iter.previous().equals(e)) {
+			i--;
+			break;
+		}
+		i--;
+	}
+	return i;
+}
+
+@Override
+public ReverseIterator<E> reverseIterator() {//done
+	// TODO Auto-generated method stub
+	return new ReverseListIterator();
+}
+
+@Override
+public ReverseIterator<E> reverseIterator(int index) { //done
+	// TODO Auto-generated method stub
+
+	return new ReverseListIteratorIndex(index);
+}
+
+
+
+
+
+private static class DNode<E> implements Node<E> {
+	private E element; 
+	private DNode<E> prev, next; 
+
+	// Constructors
+	public DNode() {}
+
+	public DNode(E e) { 
+		element = e; 
+	}
+
+	public DNode(E e, DNode<E> p, DNode<E> n) { 
+		element =e;
+		prev = p; 
+		next = n; 
+	}
+
+	// Methods
+	public DNode<E> getPrev() {
+		return prev;
+	}
+	public void setPrev(DNode<E> prev) {
+		this.prev = prev;
+	}
+	public DNode<E> getNext() {
+		return next;
+	}
+	public void setNext(DNode<E> next) {
+		this.next = next;
+	}
+	public E getElement() {
+		return element; 
+	}
+	/**
+	 * Just set references prev and next to null. Disconnect the node
+	 * from the linked list.... 
+	 */
+	public void cleanLinks() { 
+		prev = next = null; 
+	}
+
+
+	@Override
+	public void setElement(E data) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+
+private class FowardListIterator implements Iterator<E>{ //tested
+	private DNode<E> currentNode;
+	public FowardListIterator() {
+		this.currentNode = head.getNext();
+	}
+	@Override
+	public boolean hasNext() {
+		// TODO Auto-generated method stub
+		return this.currentNode != head;
+	}
+	@Override
+	public E next() {
+		// TODO Auto-generated method stub
+		if(!this.hasNext()) throw new NoSuchElementException();
+		E result = this.currentNode.getElement();
+		this.currentNode = this.currentNode.getNext();
+		return result;
+	}
+	@Override
+	public void remove() {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+
+public class ReverseListIteratorIndex implements ReverseIterator<E>{ //complete
+	DNode<E> curr = null;
+	int i=0;
+	int index =0;
+	public ReverseListIteratorIndex(int index) {
+		this.index=index;
+		curr = head.getPrev();
+	}
+	@Override
+	public boolean hasPrevious() {
+		// TODO Auto-generated method stub
+		return i<=index;
 	}
 
 	@Override
-	public int lastIndex(E e) {
+	public E previous() {
 		// TODO Auto-generated method stub
-		return 0;
+		if(!hasPrevious()) throw new NoSuchElementException("No more elements");
+		E temp = curr.getElement();
+		i++;
+		curr = curr.getPrev();
+		return temp;
+	}
+
+}
+
+private class ReverseListIterator implements ReverseIterator<E>{
+	private DNode<E> currentNode;
+	public ReverseListIterator() {
+		this.currentNode = head.getPrev();
 	}
 
 	@Override
-	public ReverseIterator<E> reverseIterator() {//done
+	public boolean hasPrevious() {
 		// TODO Auto-generated method stub
-		return new ReverseListIterator();
+		return this.currentNode != head;
+	}
+	@Override
+	public E previous() {
+		// TODO Auto-generated method stub
+		if(!this.hasPrevious()) {throw new NoSuchElementException();}
+		E result = this.currentNode.getElement();
+		this.currentNode = this.currentNode.getPrev();
+		return result;
+	}
+
+}
+
+
+public class FowardListIteratorIndex implements Iterator<E>{ //complete
+	DNode<E> curr = null;
+	int i=0;
+	int index =0;
+	public FowardListIteratorIndex(int index) {
+		this.index=index;
+		curr = head.getPrev();
+	}
+	@Override
+	public boolean hasNext() {
+		// TODO Auto-generated method stub
+		return i<=index;
 	}
 
 	@Override
-	public ReverseIterator<E> reverseIterator(int index) { //done
+	public E next() {
+		// TODO Auto-generated method stub
+		if(!hasNext())
+			throw new NoSuchElementException("No more elements");
+		E temp = curr.getElement();
+		i++;
+		curr = curr.getPrev();
+		return temp;
+	}
+	@Override
+	public void remove() {
 		// TODO Auto-generated method stub
 
-		return new ReverseListIteratorIndex(index);
 	}
 
 
-
-
-
-	private static class DNode<E> implements Node<E> {
-		private E element; 
-		private DNode<E> prev, next; 
-
-		// Constructors
-		public DNode() {}
-
-		public DNode(E e) { 
-			element = e; 
-		}
-
-		public DNode(E e, DNode<E> p, DNode<E> n) { 
-			element =e;
-			prev = p; 
-			next = n; 
-		}
-
-		// Methods
-		public DNode<E> getPrev() {
-			return prev;
-		}
-		public void setPrev(DNode<E> prev) {
-			this.prev = prev;
-		}
-		public DNode<E> getNext() {
-			return next;
-		}
-		public void setNext(DNode<E> next) {
-			this.next = next;
-		}
-		public E getElement() {
-			return element; 
-		}
-		/**
-		 * Just set references prev and next to null. Disconnect the node
-		 * from the linked list.... 
-		 */
-		public void cleanLinks() { 
-			prev = next = null; 
-		}
-
-
-		@Override
-		public void setElement(E data) {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
-
-	private class FowardListIterator implements Iterator<E>{
-		private DNode<E> currentNode;
-		public FowardListIterator() {
-			this.currentNode = head.getNext();
-		}
-		@Override
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return this.currentNode != head;
-		}
-		@Override
-		public E next() {
-			// TODO Auto-generated method stub
-			if(!this.hasNext()) throw new NoSuchElementException();
-			E result = this.currentNode.getElement();
-			this.currentNode = this.currentNode.getNext();
-			return result;
-		}
-		@Override
-		public void remove() {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
-
-	public class ReverseListIteratorIndex implements ReverseIterator<E>{ //complete
-		DNode<E> curr = null;
-		int i=0;
-		int index =0;
-		public ReverseListIteratorIndex(int index) {
-			this.index=index;
-			curr = head.getPrev();
-		}
-		@Override
-		public boolean hasPrevious() {
-			// TODO Auto-generated method stub
-			return i<=index;
-		}
-
-		@Override
-		public E previous() {
-			// TODO Auto-generated method stub
-			if(!hasPrevious()) throw new NoSuchElementException("No more elements");
-			E temp = curr.getElement();
-			i++;
-			curr = curr.getPrev();
-			return temp;
-		}
-
-	}
-
-	private class ReverseListIterator implements ReverseIterator<E>{
-		private DNode<E> currentNode;
-		public ReverseListIterator() {
-			this.currentNode = head.getPrev();
-		}
-
-		@Override
-		public boolean hasPrevious() {
-			// TODO Auto-generated method stub
-			return this.currentNode != head;
-		}
-		@Override
-		public E previous() {
-			// TODO Auto-generated method stub
-			if(!this.hasPrevious())
-				throw new NoSuchElementException();
-			E result = this.currentNode.getElement();
-			this.currentNode = this.currentNode.getPrev();
-			return result;
-		}
-
-	}
-
-
-	public class FowardListIteratorIndex implements Iterator<E>{ //complete
-		DNode<E> curr = null;
-		int i=0;
-		int index =0;
-		public FowardListIteratorIndex(int index) {
-			this.index=index;
-			curr = head.getPrev();
-		}
-		@Override
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return i<=index;
-		}
-
-		@Override
-		public E next() {
-			// TODO Auto-generated method stub
-			if(!hasNext())
-				throw new NoSuchElementException("No more elements");
-			E temp = curr.getElement();
-			i++;
-			curr = curr.getPrev();
-			return temp;
-		}
-
-
-	}
+}
 
 }
