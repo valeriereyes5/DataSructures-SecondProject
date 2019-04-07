@@ -45,6 +45,9 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 					DNode<E>  newNode = new DNode<E>(obj, curr.getPrev(),curr);
 					curr.getPrev().setNext(newNode);
 					curr.setPrev(newNode);
+					currentSize++;
+					size++;
+					return true;
 				}
 
 				curr = curr.getNext();
@@ -85,6 +88,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 				before.setNext(after);
 				after.setPrev(before);
 				currentSize--;
+				size--;
 				return true;
 
 			}
@@ -117,6 +121,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 		before.setNext(after);
 		after.setPrev(before);
 		currentSize--;
+		size--;
 		return true;
 
 	}
@@ -169,12 +174,9 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 		if(this.isEmpty()) {
 			return;
 		}
-		DNode<E> curr = this.head.getNext();
-		while(curr != head) {
-			DNode<E> temp= curr;
-			curr = curr.getNext();
-			temp.cleanLinks();
-			currentSize--;
+		int index = 0;
+		while(index!=currentSize) {
+			this.remove(index);
 		}
 	}
 
