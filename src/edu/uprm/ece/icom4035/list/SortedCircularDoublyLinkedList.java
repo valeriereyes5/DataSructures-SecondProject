@@ -52,16 +52,17 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 
 				curr = curr.getNext();
 			}
-			if(((Comparable<E>) obj).compareTo(head.getNext().getElement())>0) {
+			if(((Comparable<E>) obj).compareTo(curr.getElement())<=0) {
+				DNode<E>  newNode = new DNode<E>(obj, curr.getPrev(),curr);
+				curr.getPrev().setNext(newNode);
+				curr.setPrev(newNode);
+			}
+			
+			else if(((Comparable<E>) obj).compareTo(head.getNext().getElement())>0) {
 				DNode<E>  newNode = new DNode<E>(obj, head.getPrev(),head);
 				head.getPrev().setNext(newNode);
 				head.setPrev(newNode);
 
-			}
-			else if(((Comparable<E>) obj).compareTo(curr.getElement())<=0) {
-				DNode<E>  newNode = new DNode<E>(obj, curr.getPrev(),curr);
-				curr.getPrev().setNext(newNode);
-				curr.setPrev(newNode);
 			}
 		}
 
@@ -90,6 +91,7 @@ public class SortedCircularDoublyLinkedList<E extends Comparable<E>> implements 
 				currentSize--;
 				size--;
 				return true;
+				
 
 			}
 			cursor= cursor.next;
